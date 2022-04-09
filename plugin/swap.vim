@@ -23,7 +23,9 @@ noremap <silent> <Plug>(swap-textobject-a) :<C-u>call swap#textobj#select('a')<C
 " If g:swap_no_default_key_mappings has been defined, then quit immediately.
 if exists('g:swap_no_default_key_mappings') | finish | endif
 
-nmap gs <Plug>(swap-interactive)
-xmap gs <Plug>(swap-interactive)
+" conflicts with vim-sort-motion hotkeys. make room for sort motion since swap
+" joined later.
+nmap gsi <Plug>(swap-interactive)
+xmap gsi <Plug>(swap-interactive)
 nmap g< <Plug>(swap-prev)
 nmap g> <Plug>(swap-next)
