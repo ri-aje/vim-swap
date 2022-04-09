@@ -60,11 +60,33 @@ endfunction "}}}
 
 
 function! s:compare_ascend(i, j) abort "{{{
+  let i_is_number = a:i.str =~# '\d\+'
+  let j_is_number = a:j.str =~# '\d\+'
+  if i_is_number && j_is_number
+    let i = str2nr(a:i.str)
+    let j = str2nr(a:j.str)
+    return i - j
+  elseif i_is_number
+    return -1
+  elseif j_is_number
+    return 1
+  endif
   return a:i.str is# a:j.str ? 0 : a:i.str < a:j.str ? -1 : 1
 endfunction "}}}
 
 
 function! s:compare_descend(i, j) abort "{{{
+  let i_is_number = a:i.str =~# '\d\+'
+  let j_is_number = a:j.str =~# '\d\+'
+  if i_is_number && j_is_number
+    let i = str2nr(a:i.str)
+    let j = str2nr(a:j.str)
+    return j - i
+  elseif i_is_number
+    return 1
+  elseif j_is_number
+    return -1
+  endif
   return a:i.str is# a:j.str ? 0 : a:i.str > a:j.str ? -1 : 1
 endfunction "}}}
 
@@ -75,7 +97,7 @@ function! s:is_valid_region(region) abort "{{{
 endfunction "}}}
 
 
-" Return true is pos2 is later than pos1 on the buffer
+" Return true if pos2 is later than pos1 on the buffer
 " NOTE: Return false even if pos1 == pos2
 function! s:in_order_of(pos1, pos2) abort  "{{{
   return a:pos1[1] < a:pos2[1] || (a:pos1[1] == a:pos2[1] && a:pos1[2] < a:pos2[2])
@@ -120,7 +142,13 @@ endfunction "}}}
 function! s:get_left_pos(pos, ...) abort  "{{{
   call setpos('.', a:pos)
   if a:pos != [0, 1, 1, 0]
-    execute printf('normal! %dh', get(a:000, 0, 1))
+    let whichwrap = &whichwrap
+    set whichwrap=h
+    try
+      execute printf('normal! %dh', get(a:000, 0, 1))
+    finally
+      let &whichwrap = whichwrap
+    endtry
   endif
   return getpos('.')
 endfunction "}}}
